@@ -4,7 +4,7 @@ class Node:
         self.next = None
 
 
-class BaseHashMap():
+class BaseHashMap:
     def __init__(self, size: int, num_maps: int = 1):
         self.size = size
         self.collision_count = 0
