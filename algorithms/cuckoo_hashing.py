@@ -1,4 +1,5 @@
 import hashlib
+from utils import UniversalHashFunction
 
 
 class Node:
@@ -8,12 +9,10 @@ class Node:
 
 
 class CuckooHashMap:
-    def __init__(self, size: int, h_1, h_2):
+    def __init__(self, size: int = 20):
         self.size = size
         self.map_1 = [None] * self.size
         self.map_2 = [None] * self.size
-        self.h_1 = h_1
-        self.h_2 = h_2
         self.collision_count = 0
 
     def __repr__(self):
@@ -30,3 +29,12 @@ class CuckooHashMap:
             self.map_1[key_hash] = key
         else:
             self.map_2[key_hash] = key
+
+    def get(self):
+        pass
+
+    def insert(self):
+        pass
+
+    def delete(self):
+        pass
