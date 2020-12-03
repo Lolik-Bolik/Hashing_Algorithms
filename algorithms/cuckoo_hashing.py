@@ -21,12 +21,3 @@ class CuckooHashMap(BaseHashMap):
             self.map_1[key_hash] = key
         else:
             self.map_2[key_hash] = key
-
-    def get(self):
-        pass
-
-    def insert(self):
-        pass
-
-    def delete(self):
-        pass
