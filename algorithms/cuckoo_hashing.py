@@ -1,19 +1,13 @@
 import hashlib
 from utils import UniversalHashFunction
+from base import BaseHashMap, Node
 
 
-class Node:
-    def __init__(self, data=None):
-        self.data = data
-        self.next = None
+class CuckooHashMap(BaseHashMap):
+    def __init__(self, size: int = 20, num_maps: int = 2):
+        super().__init__(size, num_maps)
+        self.map_1, self.map_2 = self.maps
 
-
-class CuckooHashMap:
-    def __init__(self, size: int = 20):
-        self.size = size
-        self.map_1 = [None] * self.size
-        self.map_2 = [None] * self.size
-        self.collision_count = 0
 
     def __repr__(self):
         for i in range(self.size):
