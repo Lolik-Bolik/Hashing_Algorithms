@@ -1,6 +1,5 @@
 from utils import UniversalHashFunction
 from algorithms import CuckooHashMap
-from random import randint
 from Crypto.Util import number
 
 
