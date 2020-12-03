@@ -28,7 +28,7 @@ class UniversalHashFunction:
         self.zet_p = set(i for i in range(0, p - 1))
         self.zet_p2 = set(i for i in range(1, p - 1))
 
-    def __call__(self, k):
+    def __call__(self, key):
         a = random.choice(tuple(self.zet_p2))
         b = random.choice(tuple(self.zet_p))
-        return ((a * k + b) % self.p) % self.hash_map_size
+        return ((a * key + b) % self.p) % self.hash_map_size
