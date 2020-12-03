@@ -26,6 +26,7 @@ class CuckooHashMap(BaseHashMap):
     def insert(self, key):
         if key is None:
             return False
+
         if self.get(key) is not None:
             return False
         first_index, second_index = self.get_search_positions(key)
@@ -73,13 +74,13 @@ class CuckooHashMap(BaseHashMap):
         self.map_1 = temp_map_1
         self.map_2 = temp_map_2
         logger.info("Rehashing done!")
+        return True
 
     def get(self, key):
-        first_index = self.hash_fucntions[0](key)
-        second_index = self.hash_fucntions[1](key)
+        first_index, second_index = self.get_search_positions(key)
         first_value = self.map_1[first_index]
         second_value = self.map_2[second_index]
-        if first_value is not None and second_value == key:
+        if first_value is not None and first_value == key:
             return True
         elif second_value is not None and second_value == key:
             return True
