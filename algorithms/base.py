@@ -17,16 +17,13 @@ class BaseHashMap:
             print("----------------------")
         return ""
 
-    def add(self, key):
+    def insert(self, value):
         raise NotImplementedError
 
-    def get(self):
+    def get(self, value):
         raise NotImplementedError
 
-    def insert(self):
-        raise NotImplementedError
-
-    def delete(self):
+    def delete(self, value):
         raise NotImplementedError
 
     def _create_maps(self, num_maps):
