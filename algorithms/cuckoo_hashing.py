@@ -27,7 +27,7 @@ class CuckooHashMap(BaseHashMap):
         if key is None:
             return False
 
-        if self.get(key) is not None:
+        if self.get(key):
             return False
         first_index, second_index = self.get_search_positions(key)
         # look up in first bucket
@@ -63,16 +63,7 @@ class CuckooHashMap(BaseHashMap):
     def rehash(self):
         self.hash_fucntions = self.get_hash_functions()
         logger.info("New hash fucntions choosed!")
-        temp_map_1, temp_map_2 = self._create_maps(self.num_maps)
-        # for i in range(self.size):
-        #     first_value = self.map_1[i]
-        #     second_value = self.map_2[i]
-        #     if first_value is not None:
-        #         temp_map_1.insert(i, first_value)
-        #     if second_value is not None:
-        #         temp_map_2.insert(i, second_value)
-        self.map_1 = temp_map_1
-        self.map_2 = temp_map_2
+        self.map_1, self.map_2 = self._create_maps(self.num_maps)
         logger.info("Rehashing done!")
         return True
 
@@ -85,7 +76,7 @@ class CuckooHashMap(BaseHashMap):
         elif second_value is not None and second_value == key:
             return True
         else:
-            return None
+            return False
 
     def get_the_load_factor(self):
         return self.insereted_elements_amount / self.size
