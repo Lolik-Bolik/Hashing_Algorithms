@@ -40,12 +40,24 @@ class ChainHashMap(BaseHashMap):
     def delete(self, item):
         hash_value = self.hash_func(item.key)
         record_node = self.map[hash_value]
+        if record_node is None:
+            return
         previous_node = None
         while record_node.next is not None:
-            if record_node.data.value == item.value:
+            if record_node.data.key == item.key:
                 if previous_node is not None:
                     previous_node.next = record_node.next
                 del record_node
                 return
             previous_node = record_node
             record_node = record_node.next
+        if record_node.data.key == item.key:
+            if previous_node is not None:
+                previous_node.next = record_node.next
+            else:
+                self.map[hash_value] = None
+            del record_node
+
+    def refresh(self):
+        super().refresh()
+        self.map = self.maps[0]
