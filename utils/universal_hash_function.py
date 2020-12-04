@@ -21,15 +21,12 @@ class UniversalHashFunction:
 
     """
 
-    def __init__(self, p, m):
+    def __init__(self, p: int, m: int):
         self.hash_map_size = m
         self.p = p
         # create two set for picking a and b, naming from Cormen
-        self.zet_p = set(i for i in range(0, p - 1))
-        self.zet_p2 = set(i for i in range(1, p - 1))
-        self.a = random.choice(tuple(self.zet_p2))
-        self.b = random.choice(tuple(self.zet_p))
+        self.a = random.choice(tuple(range(0, self.p - 1)))
+        self.b = random.choice(tuple(range(1, self.p - 1)))
 
-    def __call__(self, key):
-
-        return ((self.a * key + self.b) % self.p) % self.hash_map_size
+    def __call__(self, k):
+        return ((self.a * k + self.b) % self.p) % self.hash_map_size
