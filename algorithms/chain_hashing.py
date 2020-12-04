@@ -23,17 +23,17 @@ class ChainHashMap(BaseHashMap):
             record_node.next = self.map[hash_value]
             self.map[hash_value] = record_node
 
-    def get(self, item):
-        hash_value = self.hash_func(item.key)
+    def get(self, key):
+        hash_value = self.hash_func(key)
         if self.map[hash_value] is None:
             return False, None
         else:
             record_node = self.map[hash_value]
             while record_node.next is not None:
-                if record_node.data.value == item.value:
+                if record_node.data.key == key:
                     return True, record_node.data
                 record_node = record_node.next
-            if record_node.data.value == item.value:
+            if record_node.data.key == key:
                 return True, record_node.data
             return False, None
 

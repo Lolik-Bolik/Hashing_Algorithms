@@ -1,5 +1,5 @@
 from collections import Hashable
-from typing import Any
+from typing import Any, Union
 from utils import UniversalHashFunction
 from Crypto.Util import number
 
@@ -55,7 +55,7 @@ class BaseHashMap:
     def get(self, key: Hashable):
         raise NotImplementedError
 
-    def delete(self, item: Item):
+    def delete(self, item: Union[Item, Hashable]):
         raise NotImplementedError
 
     def _create_maps(self):
