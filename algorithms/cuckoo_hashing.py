@@ -1,4 +1,4 @@
-from .base import Node, BaseHashMap
+from .base import BaseHashMap
 import math
 import logging as logger
 
@@ -24,7 +24,6 @@ class CuckooHashMap(BaseHashMap):
         return self.hash_functions[0](key), self.hash_functions[1](key)
 
     def insert(self, item):
-        assert item is not None
         if self.get(item.key):
             return False
         first_index, second_index = self.get_search_positions(item.key)
