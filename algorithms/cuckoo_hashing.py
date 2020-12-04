@@ -18,6 +18,7 @@ class CuckooHashMap(BaseHashMap):
         self.collision_count = 0
         self.insereted_elements_amount = [0] * self.num_maps
         self.max_knockout = max(int(6 * math.log(elements_amount)), 1)
+        self.elements_amount = elements_amount
 
     def get_search_positions(self, key):
         return self.hash_functions[0](key), self.hash_functions[1](key)
@@ -58,28 +59,29 @@ class CuckooHashMap(BaseHashMap):
         return True
 
     def rehash(self):
-        self.hash_functions = self._generate_hash_func(self.num_hash_func)
+        # self.hash_functions = self._generate_hash_func(self.num_hash_func)
         logger.info("New hash fucntions choosed!")
-        temp_1, temp_2 = self._create_maps()
+        temp = CuckooHashMap(size=self.size, elements_amount=self.elements_amount)
         for i in range(self.size):
             x = self.map_1[i]
             y = self.map_2[i]
             if x is not None:
-                temp_1.insert(x)
+                temp.insert(x)
             if y is not None:
-                temp_2.insert(y)
-        self.map_1 = temp_1
-        self.map_2 = temp_2
+                temp.insert(y)
+        self.map_1 = temp.map_1
+        self.map_2 = temp.map_2
+        self.hash_functions = temp.hash_functions
         logger.info("Rehashing done!")
 
     def get(self, key):
         first_index, second_index = self.get_search_positions(key)
-        first_node = self.map_1[first_index]
-        second_node = self.map_2[second_index]
-        if first_node is not None and first_node.key == key:
-            return True
-        elif second_node is not None and second_node.key == key:
-            return True
+        first_item = self.map_1[first_index]
+        second_item = self.map_2[second_index]
+        if first_item is not None and first_item.key == key:
+            return True, first_item.value
+        elif second_item is not None and second_item.key == key:
+            return True, second_item.value
         else:
             return False
 
@@ -91,12 +93,12 @@ class CuckooHashMap(BaseHashMap):
 
     def delete(self, key):
         first_index, second_index = self.get_search_positions(key)
-        first_node = self.map_1[first_index]
-        second_node = self.map_2[second_index]
-        if first_node is not None and first_node.key == key:
+        first_item = self.map_1[first_index]
+        second_item = self.map_2[second_index]
+        if first_item is not None and first_item.key == key:
             self.map_1[first_index] = None
             self.insereted_elements_amount[0] -= 1
-        elif second_node is not None and second_node.key == key:
+        elif second_item is not None and second_item.key == key:
             self.map_2[second_index] = None
             self.insereted_elements_amount[1] -= 1
         else:
