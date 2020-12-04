@@ -39,6 +39,7 @@ class BaseHashMap:
         self.size = size
         self.collision_count = 0
         self.num_maps = num_maps
+        self.num_hash_func = num_hash_func
         self.maps = self._create_maps()
         self.hash_functions = self._generate_hash_func(num_hash_func)
 
