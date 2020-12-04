@@ -15,11 +15,11 @@ class ChainHashMap(BaseHashMap):
     def insert(self, item):
         hash_value = self.hash_func(item.key)
         if self.map[hash_value] is None:
-            self.map[hash_value] = NodeChain(item.value)
+            self.map[hash_value] = NodeChain(item)
             return
         else:
             self.collision_count += 1
-            record_node = NodeChain(item.value)
+            record_node = NodeChain(item)
             record_node.next = self.map[hash_value]
             self.map[hash_value] = record_node
 
@@ -30,10 +30,10 @@ class ChainHashMap(BaseHashMap):
         else:
             record_node = self.map[hash_value]
             while record_node.next is not None:
-                if record_node.data == item.value:
+                if record_node.data.value == item.value:
                     return True, record_node.data
                 record_node = record_node.next
-            if record_node.data == item.value:
+            if record_node.data.value == item.value:
                 return True, record_node.data
             return False, None
 
@@ -42,7 +42,7 @@ class ChainHashMap(BaseHashMap):
         record_node = self.map[hash_value]
         previous_node = None
         while record_node.next is not None:
-            if record_node.data == item.value:
+            if record_node.data.value == item.value:
                 if previous_node is not None:
                     previous_node.next = record_node.next
                 del record_node

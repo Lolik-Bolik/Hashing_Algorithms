@@ -12,13 +12,13 @@ def main():
     hash_map_size = 3
     assert p > hash_map_size
     h = ChainHashMap(size=hash_map_size)
-    digits = [Item(i, random.randint(0, hash_map_size)) for i in range(5)]
+    digits = [Item(i, i) for i in range(5)]
     for digit in digits:
         h.insert(digit)
     print(h)
     for digit in digits:
         is_found, value = h.get(digit)
-        assert value == digit.value
+        assert value.value == digit.value
 
 
 if __name__ == "__main__":

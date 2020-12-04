@@ -11,6 +11,10 @@ class Item:
         self.key = key
         self.value = value
 
+    def __repr__(self):
+        print(f"{self.key}: {self.value}", end="")
+        return ""
+
 
 class Node:
     def __init__(self, data: Item = None):
@@ -34,7 +38,8 @@ class BaseHashMap:
     def __init__(self, size: int, num_maps: int = 1, num_hash_func: int = 1):
         self.size = size
         self.collision_count = 0
-        self.maps = self._create_maps(num_maps)
+        self.num_maps = num_maps
+        self.maps = self._create_maps()
         self.hash_functions = self._generate_hash_func(num_hash_func)
 
     def __repr__(self):
@@ -53,10 +58,10 @@ class BaseHashMap:
     def delete(self, item: Item):
         raise NotImplementedError
 
-    def _create_maps(self, num_maps: int):
-        return [[None] * self.size for _ in range(num_maps)]
+    def _create_maps(self):
+        return [[None] * self.size for _ in range(self.num_maps)]
 
-    def _generate_hash_func(self, num_hash_func: int = 1, number_of_bits: int = 8):
+    def _generate_hash_func(self, num_hash_func: int, number_of_bits: int = 8):
         p = number.getPrime(number_of_bits)
         while p < self.size:
             number_of_bits += 2
@@ -65,3 +70,7 @@ class BaseHashMap:
             UniversalHashFunction(p, self.size) for _ in range(num_hash_func)
         ]
         return hash_functions
+
+    def refresh(self):
+        self.maps = self._create_maps()
+        self.collision_count = 0

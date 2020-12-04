@@ -21,7 +21,7 @@ class UniversalHashFunction:
 
     """
 
-    def __init__(self, p, m):
+    def __init__(self, p: int, m: int):
         self.hash_map_size = m
         self.p = p
         # create two set for picking a and b, naming from Cormen
