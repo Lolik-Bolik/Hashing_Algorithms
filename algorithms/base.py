@@ -15,6 +15,9 @@ class Item:
         print(f"{self.key}: {self.value}", end="")
         return ""
 
+    def __eq__(self, other):
+        return (self.key == other.key) and (self.value == other.value)
+
 
 class Node:
     def __init__(self, data: Item = None):
@@ -32,6 +35,9 @@ class Node:
         else:
             print(self.data, end="")
         return ""
+
+    def __eq__(self, other):
+        return self.data == other.data
 
 
 class BaseHashMap:
