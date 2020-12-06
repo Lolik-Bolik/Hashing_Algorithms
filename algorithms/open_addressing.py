@@ -1,5 +1,4 @@
 from algorithms.base import BaseHashMap, Item, Node
-import logging as logger
 
 
 class OpenNode(Node):
@@ -37,7 +36,6 @@ class OpenAddressingHashMap(BaseHashMap):
 
     def insert(self, item: Item):
         if self.inserted_elements_amount == self.size:
-            logger.warning("Hash Table is full, rehashing...")
             self.rehash()
         search_index = self.hash_functions[0](item.key)
         if self.map[search_index] is None or self.map[search_index].deleted:
@@ -79,7 +77,6 @@ class OpenAddressingHashMap(BaseHashMap):
     def delete(self, item):
         search_index = self.hash_functions[0](item.key)
         if self.map[search_index] is None:
-            logger.info("There is no such an element in the table")
             return False
         elif self.map[search_index].data == item:
             self.map[search_index].deleted = True
@@ -89,7 +86,6 @@ class OpenAddressingHashMap(BaseHashMap):
             for offset_index in range(1, self.size):
                 new_search_index = self.linear_probing(search_index, offset_index)
                 if self.map[new_search_index] is None:
-                    logger.info("There is no such an element in the table")
                     return False
                 elif self.map[new_search_index].data == item:
                     self.map[search_index].deleted = True
@@ -102,11 +98,9 @@ class OpenAddressingHashMap(BaseHashMap):
         self.inserted_elements_amount = 0
 
     def rehash(self, k: int = 2):
-        logger.info("New hash fucntions choosed!")
         temp = OpenAddressingHashMap(size=self.size * k)
         for i in range(self.size):
             x = self.map[i]
             if x is not None:
                 temp.insert(x.data)
         self.__dict__.update(temp.__dict__)
-        logger.info("Rehashing done!")

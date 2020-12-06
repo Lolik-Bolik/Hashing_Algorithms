@@ -6,7 +6,7 @@ random.seed(42)
 
 
 class TestCuckooHashing:
-    hash_map = CuckooHashMap(size=1, elements_amount=2)
+    hash_map = CuckooHashMap(size=1)
 
     # def test_adding_elements(self):
     #     digits_number = random.randint(1, 100)

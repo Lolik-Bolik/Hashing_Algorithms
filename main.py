@@ -1,23 +1,22 @@
-from algorithms import CuckooHashMap
-from algorithms.base import Item
-import random
-import time
+from evaluator import Evaluator
+from inspect import getmembers, isclass
+import algorithms
+import json
+from tqdm import tqdm
 
 
 def main():
-    elements_amount = 1000000
-    digits = [random.randint(0, 100)] * elements_amount
-    hash_map_size = len(digits)
-    h = CuckooHashMap(size=hash_map_size, elements_amount=len(digits))
-    start = time.time()
-    for i, digit in enumerate(digits):
-        item = Item(i, digit)
-        h.insert(item)
-    print(f"Insertion time: {round(time.time() - start,2)}s")
-    load_factors = h.get_the_load_factor()
-    print(
-        f"Load factor of first bucket {load_factors[0]}\nLoad factor of second bucket {load_factors[1]}"
-    )
+    measurement_results = {}
+    hashing_classes = [
+        o for o in getmembers(algorithms) if isclass(o[1]) if not o[0] == "Item"
+    ]
+    pbar = tqdm(hashing_classes)
+    for name, hashing_table_cls in pbar:
+        pbar.set_description(f"Name: {name}")
+        evaluator = Evaluator(100, 100000, 1000, hashing_table_cls)
+        measurement_results[name] = evaluator()
+    with open("measurement_results_100k.json", "w") as fp:
+        json.dump(measurement_results, fp, indent=4, sort_keys=True)
 
 
 if __name__ == "__main__":

@@ -2,6 +2,7 @@ from collections import Hashable
 from typing import Any, Union
 from utils import UniversalHashFunction
 from Crypto.Util import number
+from copy import deepcopy
 
 
 class Item:
@@ -17,6 +18,14 @@ class Item:
 
     def __eq__(self, other):
         return (self.key == other.key) and (self.value == other.value)
+
+    def __deepcopy__(self, memo):
+        cls = self.__class__
+        result = cls.__new__(cls)
+        memo[id(self)] = result
+        for k, v in self.__dict__.items():
+            setattr(result, k, deepcopy(v, memo))
+        return result
 
 
 class Node:
@@ -39,6 +48,14 @@ class Node:
     def __eq__(self, other):
         return self.data == other.data
 
+    def __deepcopy__(self, memo):
+        cls = self.__class__
+        result = cls.__new__(cls)
+        memo[id(self)] = result
+        for k, v in self.__dict__.items():
+            setattr(result, k, deepcopy(v, memo))
+        return result
+
 
 class BaseHashMap:
     def __init__(self, size: int, num_maps: int = 1, num_hash_func: int = 1):
@@ -48,6 +65,7 @@ class BaseHashMap:
         self.num_hash_func = num_hash_func
         self.maps = self._create_maps()
         self.hash_functions = self._generate_hash_func(num_hash_func)
+        self.inserted_elements_amount = 0
 
     def __repr__(self):
         for table in self.maps:
@@ -81,3 +99,14 @@ class BaseHashMap:
     def refresh(self):
         self.maps = self._create_maps()
         self.collision_count = 0
+
+    def __deepcopy__(self, memo):
+        cls = self.__class__
+        result = cls.__new__(cls)
+        memo[id(self)] = result
+        for k, v in self.__dict__.items():
+            setattr(result, k, deepcopy(v, memo))
+        return result
+
+    def __len__(self):
+        return self.inserted_elements_amount

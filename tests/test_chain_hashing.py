@@ -3,7 +3,7 @@ from algorithms import Item
 
 
 class TestChainHashing:
-    hash_map = ChainHashMap(size=1)
+    hash_map = ChainHashMap(size=1, ignore_max_elements=True)
 
     def test_insert(self):
         item = Item(1, 1)
