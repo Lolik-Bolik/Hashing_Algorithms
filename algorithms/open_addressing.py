@@ -41,6 +41,7 @@ class OpenAddressingHashMap(BaseHashMap):
         if self.map[search_index] is None or self.map[search_index].deleted:
             self.map[search_index] = OpenNode(item)
             self.inserted_elements_amount += 1
+            return True
         else:
             self.collision_count += 1
             for offset_index in range(1, self.size):
@@ -51,7 +52,8 @@ class OpenAddressingHashMap(BaseHashMap):
                 ):
                     self.map[new_search_index] = OpenNode(item)
                     self.inserted_elements_amount += 1
-                    break
+                    return True
+        return False
 
     def get(self, key):
         search_index = self.hash_functions[0](key)

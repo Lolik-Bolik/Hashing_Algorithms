@@ -28,7 +28,7 @@ class Evaluator:
         if operation == "insert":
             item = Item(self.max_value + 1, self.max_value + 1)
         else:
-            key = randint(0, size)
+            key = randint(0, size - 1)
             item = Item(key, key)
         tic = time()
         if operation != "get":
