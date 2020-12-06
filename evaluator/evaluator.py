@@ -55,7 +55,9 @@ class Evaluator:
                         hash_table, operation, int(size * density)
                     )
                     if operation_time > 60:
-                        launch_results[operation] = time
+                        launch_results[operation] = operation_time
+                        self.results[f"{size}, {density}"] = launch_results
                         return self.results
+                    launch_results[operation] = operation_time
                 self.results[f"{size}, {density}"] = launch_results
         return self.results
