@@ -17,14 +17,14 @@ class CuckooHashMap(BaseHashMap):
         self.map_1, self.map_2 = self.maps
         self.collision_count = 0
         self.insereted_elements_amount = [0] * self.num_maps
-        self.max_knockout = max(int(6 * math.log(elements_amount)), 1)
+        self.max_knockout = max(int(6 * math.log(elements_amount)), 2)
         self.elements_amount = elements_amount
 
     def get_search_positions(self, key):
         return self.hash_functions[0](key), self.hash_functions[1](key)
 
     def insert(self, item):
-        if self.get(item.key):
+        if self.get(item.key)[0]:
             return False
         first_index, second_index = self.get_search_positions(item.key)
         # look up in first bucket
@@ -68,9 +68,7 @@ class CuckooHashMap(BaseHashMap):
                 temp.insert(x)
             if y is not None:
                 temp.insert(y)
-        self.map_1 = temp.map_1
-        self.map_2 = temp.map_2
-        self.hash_functions = temp.hash_functions
+        self.__dict__.update(temp.__dict__)
         logger.info("Rehashing done!")
 
     def get(self, key):
@@ -78,11 +76,11 @@ class CuckooHashMap(BaseHashMap):
         first_item = self.map_1[first_index]
         second_item = self.map_2[second_index]
         if first_item is not None and first_item.key == key:
-            return True, first_item.value
+            return True, first_item
         elif second_item is not None and second_item.key == key:
-            return True, second_item.value
+            return True, second_item
         else:
-            return False
+            return False, None
 
     def get_the_load_factor(self):
         return (
