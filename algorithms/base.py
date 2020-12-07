@@ -58,13 +58,19 @@ class Node:
 
 
 class BaseHashMap:
-    def __init__(self, size: int, num_maps: int = 1, num_hash_func: int = 1):
+    def __init__(
+        self,
+        size: int,
+        num_maps: int = 1,
+        num_hash_func: int = 1,
+        number_of_bits: int = 8,
+    ):
         self.size = size
         self.collision_count = 0
         self.num_maps = num_maps
         self.num_hash_func = num_hash_func
         self.maps = self._create_maps()
-        self.hash_functions = self._generate_hash_func(num_hash_func)
+        self.hash_functions = self._generate_hash_func(num_hash_func, number_of_bits)
         self.inserted_elements_amount = 0
 
     def __repr__(self):
@@ -86,7 +92,7 @@ class BaseHashMap:
     def _create_maps(self):
         return [[None] * self.size for _ in range(self.num_maps)]
 
-    def _generate_hash_func(self, num_hash_func: int, number_of_bits: int = 8):
+    def _generate_hash_func(self, num_hash_func: int, number_of_bits: int):
         p = number.getPrime(number_of_bits)
         while p < self.size:
             number_of_bits += 2

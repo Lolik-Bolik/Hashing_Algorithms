@@ -13,9 +13,9 @@ def main():
     pbar = tqdm(hashing_classes)
     for name, hashing_table_cls in pbar:
         pbar.set_description(f"Name: {name}")
-        evaluator = Evaluator(1000, 105000, 5000, hashing_table_cls)
+        evaluator = Evaluator(1000, 105000, 5000, hashing_table_cls, dtype="tuple")
         measurement_results[name] = evaluator()
-    with open("measurement_results_100k.json", "w") as fp:
+    with open("measurement_results_100k_tuple.json", "w") as fp:
         json.dump(measurement_results, fp, indent=4, sort_keys=True)
 
 

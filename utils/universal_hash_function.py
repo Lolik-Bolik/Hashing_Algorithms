@@ -1,4 +1,5 @@
 import random
+from algorithms.base import Union
 
 
 class UniversalHashFunction:
@@ -24,9 +25,24 @@ class UniversalHashFunction:
     def __init__(self, p: int, m: int):
         self.hash_map_size = m
         self.p = p
-        # create two set for picking a and b, naming from Cormen
-        self.a = random.choice(tuple(range(0, self.p - 1)))
-        self.b = random.choice(tuple(range(1, self.p - 1)))
+        # Naming from Corman
+        self.a = random.randint(0, self.p - 1)
+        self.b = random.randint(1, self.p - 1)
 
-    def __call__(self, k):
-        return ((self.a * k + self.b) % self.p) % self.hash_map_size
+    def __call__(self, k: Union[int, tuple, str]):
+        if isinstance(k, int):
+            return ((self.a * k + self.b) % self.p) % self.hash_map_size
+        elif isinstance(k, tuple):
+            assert all(
+                isinstance(v, int) for v in k
+            )  # Could be slow, but we should check that there are ints in vector
+            # Note: This is (len(k) / p) + 1 / size universal hash function, so we need to choose quite bit prime number!
+            return (
+                sum([self.a * v ** i for i, v in enumerate(k)])
+                % self.p
+                % self.hash_map_size
+            )
+        elif isinstance(k, str):
+            raise NotImplementedError
+        else:
+            raise TypeError("Key should be from supported types: int, tuple, str")

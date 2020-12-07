@@ -8,8 +8,11 @@ class CuckooHashMap(BaseHashMap):
         size: int = 20,
         num_maps: int = 2,
         num_hash_func: int = 2,
+        number_of_bits: int = 8,
     ):
-        super().__init__(size, num_maps, num_hash_func=num_hash_func)
+        super().__init__(
+            size, num_maps, num_hash_func=num_hash_func, number_of_bits=number_of_bits
+        )
         self.map_1, self.map_2 = self.maps
         self.collision_count = 0
         self.inserted_elements_amount = [0] * self.num_maps

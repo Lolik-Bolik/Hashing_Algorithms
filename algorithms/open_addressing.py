@@ -20,8 +20,11 @@ class OpenAddressingHashMap(BaseHashMap):
         size: int = 20,
         num_maps: int = 1,
         num_hash_func: int = 1,
+        number_of_bits: int = 8,
     ):
-        super().__init__(size, num_maps, num_hash_func=num_hash_func)
+        super().__init__(
+            size, num_maps, num_hash_func=num_hash_func, number_of_bits=number_of_bits
+        )
         self.map = self.maps[0]
         self.inserted_elements_amount = 0
 
