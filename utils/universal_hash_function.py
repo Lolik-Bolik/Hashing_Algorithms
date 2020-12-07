@@ -43,6 +43,7 @@ class UniversalHashFunction:
                 % self.hash_map_size
             )
         elif isinstance(k, str):
+            # TODO: implement
             raise NotImplementedError
         else:
             raise TypeError("Key should be from supported types: int, tuple, str")
