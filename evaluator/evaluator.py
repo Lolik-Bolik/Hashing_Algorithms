@@ -2,7 +2,7 @@ from time import time
 from algorithms.base import Item
 from copy import deepcopy
 from tqdm import tqdm
-from random import randint, choice
+from random import choice
 
 
 class Evaluator:
@@ -19,6 +19,7 @@ class Evaluator:
             0.9,
             0.99,
         ]  # We drop for 1.0 as we assert status and it is false for empty table
+        # TODO: подумать о том, что для кукушки плотность на самом деле в два раза меньше
         self.results = {}
         self.dtype = dtype
         self.data = None
@@ -33,7 +34,7 @@ class Evaluator:
         elif self.dtype == "str":
             item = Item(f"{key}", key)
         elif self.dtype == "tuple":
-            item = Item((key, key // 2, key // 4), key)
+            item = Item((key, key + 2, key + 4), key)
         else:
             raise TypeError("Data type should be either int, str, or tuple")
         return item

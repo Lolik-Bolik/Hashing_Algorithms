@@ -37,6 +37,7 @@ class UniversalHashFunction:
                 isinstance(v, int) for v in k
             )  # Could be slow, but we should check that there are ints in vector
             # Note: This is (len(k) / p) + 1 / size universal hash function, so we need to choose quite bit prime number!
+            # TODO: проверить, т.к кукушка выдает одинаковые хеши для векторов (0, 0, 0) и (1, 0, 0)
             return (
                 sum([self.a * v ** i for i, v in enumerate(k)])
                 % self.p

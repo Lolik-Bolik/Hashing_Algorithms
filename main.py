@@ -12,6 +12,8 @@ def main():
     ]
     pbar = tqdm(hashing_classes)
     for name, hashing_table_cls in pbar:
+        if name != "CuckooHashMap":
+            continue
         pbar.set_description(f"Name: {name}")
         evaluator = Evaluator(1000, 105000, 5000, hashing_table_cls, dtype="tuple")
         measurement_results[name] = evaluator()
