@@ -8,7 +8,6 @@ class Visualizer:
         self.methods = ["ChainHashMap", "CuckooHashMap", "OpenAddressingHashMap"]
 
     def __call__(self, method_name, operation_name):
-        fig = []
         if method_name != "all":
             assert method_name in self.methods
             cur_data = self.data.query(f"method=='{method_name}'")
