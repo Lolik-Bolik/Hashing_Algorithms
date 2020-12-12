@@ -7,6 +7,7 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 import plotly.graph_objects as go
+import dash_bootstrap_components as dbc
 from app import app
 from dash.dependencies import Input, Output
 
@@ -15,13 +16,36 @@ methods = {
     "Chain Hashing": "ChainHashMap",
     "Cuckoo Hashing": "CuckooHashMap",
     "Open Addressing Hashing": "OpenAddressingHashMap",
+    "all": "all",
 }
+
+operation_names = ["delete", "get", "insert"]
 
 
 def main(opts):
+    card = dbc.Card(
+        dbc.CardBody(
+            [
+                html.H4(
+                    "Hashing Algorithms result visaulization", className="card-title"
+                ),
+                html.H6("About", className="card-subtitle"),
+                html.P(
+                    "Here is the link with source code of algorithms and visualization.",
+                    className="card-text",
+                ),
+                dbc.CardLink(
+                    "Github link",
+                    href="https://github.com/Lolik-Bolik/Hashing_Algorithms/",
+                ),
+            ]
+        ),
+        style={"width": "25rem"},
+    )
 
     app.layout = html.Div(
         [
+            card,
             html.Div(
                 [
                     dcc.Dropdown(
@@ -32,18 +56,30 @@ def main(opts):
                 ],
                 style={"width": "48%", "display": "inline-block"},
             ),
+            html.Div(
+                [
+                    dcc.Dropdown(
+                        id="operation-name",
+                        options=[{"label": i, "value": i} for i in operation_names],
+                        value="get",
+                    )
+                ],
+                style={"width": "48%", "display": "inline-block"},
+            ),
             dcc.Graph(id="indicator-graphic"),
         ]
     )
 
-    @app.callback(Output("indicator-graphic", "figure"), Input("method-name", "value"))
-    def update_graph(method_name):
+    @app.callback(
+        Output("indicator-graphic", "figure"),
+        Input("method-name", "value"),
+        Input("operation-name", "value"),
+    )
+    def update_graph(method_name, operation_name):
         method_name = methods[method_name]
         visualizer = Visualizer(opts.data_path)
-        fig = visualizer(method_name)
+        fig = visualizer(method_name, operation_name)
         return fig
-
-    app.run_server(debug=True)
 
 
 if __name__ == "__main__":
@@ -57,3 +93,4 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     main(args)
+    app.run_server(debug=True)
