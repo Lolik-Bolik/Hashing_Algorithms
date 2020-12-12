@@ -6,22 +6,44 @@ import pandas as pd
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
+import plotly.graph_objects as go
+from app import app
+from dash.dependencies import Input, Output
 
-app = dash.Dash()
+
+methods = {
+    "Chain Hashing": "ChainHashMap",
+    "Cuckoo Hashing": "CuckooHashMap",
+    "Open Addressing Hashing": "OpenAddressingHashMap",
+}
 
 
 def main(opts):
-    vs = Visualizer(opts.data_path)
-    fig = vs()
 
-    app.layout = html.Div([dcc.Graph(figure=fig)])
+    app.layout = html.Div(
+        [
+            html.Div(
+                [
+                    dcc.Dropdown(
+                        id="method-name",
+                        options=[{"label": i, "value": i} for i in methods.keys()],
+                        value="Chain Hashing",
+                    )
+                ],
+                style={"width": "48%", "display": "inline-block"},
+            ),
+            dcc.Graph(id="indicator-graphic"),
+        ]
+    )
 
-    app.run_server(debug=True, use_reloader=False)
-    # print(data_pd.head())
-    # print(len(data_pd))
-    # df = px.data.gapminder().query("country=='Canada'")
-    # fig = px.line(df, x="year", y="lifeExp", title='Life expectancy in Canada')
-    # fig.show()
+    @app.callback(Output("indicator-graphic", "figure"), Input("method-name", "value"))
+    def update_graph(method_name):
+        method_name = methods[method_name]
+        visualizer = Visualizer(opts.data_path)
+        fig = visualizer(method_name)
+        return fig
+
+    app.run_server(debug=True)
 
 
 if __name__ == "__main__":

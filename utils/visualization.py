@@ -4,10 +4,12 @@ import plotly.express as px
 
 class Visualizer:
     def __init__(self, path):
-        self.data_path = path
+        self.data = get_data(path)
+        self.methods = ["ChainHashMap", "CuckooHashMap", "OpenAddressingHashMap"]
 
-    def __call__(self):
-        data = get_data(self.data_path)
-        data = data.query("method=='OpenAddressingHashMap'")
-        fig = px.line(data, x="elements_amount", y="insert", title="Hashing")
+    def __call__(self, method_name):
+        assert method_name in self.methods
+        cur_data = self.data.query(f"method=='{method_name}'")
+        print(cur_data.head())
+        fig = px.line(cur_data, x="elements_amount", y="get", title=f"{method_name}")
         return fig
