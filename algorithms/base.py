@@ -1,6 +1,6 @@
 from collections import Hashable
 from typing import Any, Union
-from utils import UniversalHashFunction
+from utils import UniversalHashFunction, FastUniversalHashFunction
 from Crypto.Util import number
 from copy import deepcopy
 
@@ -64,12 +64,14 @@ class BaseHashMap:
         num_maps: int = 1,
         num_hash_func: int = 1,
         number_of_bits: int = 8,
+        use_fast_hashing: bool = False,
     ):
         self.size = size
         self.collision_count = 0
         self.num_maps = num_maps
         self.num_hash_func = num_hash_func
         self.maps = self._create_maps()
+        self.use_fast_hashing = use_fast_hashing
         self.hash_functions = self._generate_hash_func(num_hash_func, number_of_bits)
         self.inserted_elements_amount = 0
 
@@ -97,9 +99,12 @@ class BaseHashMap:
         while p < self.size:
             number_of_bits += 2
             p = number.getPrime(number_of_bits)
-        hash_functions = [
-            UniversalHashFunction(p, self.size) for _ in range(num_hash_func)
-        ]
+        function = (
+            UniversalHashFunction
+            if not self.use_fast_hashing
+            else FastUniversalHashFunction
+        )
+        hash_functions = [function(p, self.size) for _ in range(num_hash_func)]
         return hash_functions
 
     def refresh(self):
