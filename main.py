@@ -20,7 +20,7 @@ def parse_args():
         "-rd",
         "--real-data",
         action="store_true",
-        help="Build frequency dict of a real book and measure time",
+        help="Measure time on real data",
     )
     return parser.parse_args()
 
@@ -34,7 +34,7 @@ def run(pbar, dtype, additional_save_path="", **kwargs):
     with open(
         f"data/measurement_results_100k_{dtype}{additional_save_path}.json", "w"
     ) as fp:
-        json.dump(measurement_results, fp, indent=4, sort_keys=True)
+        json.dump(measurement_results, fp, indent=4, sort_keys=False)
 
 
 def main():
