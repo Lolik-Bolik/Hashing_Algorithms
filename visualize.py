@@ -9,20 +9,26 @@ import dash_html_components as html
 import plotly.graph_objects as go
 import dash_bootstrap_components as dbc
 from app import app
+from inspect import getmembers, isclass
 from dash.dependencies import Input, Output
+import algorithms
 
+algos = [o[0] for o in getmembers(algorithms) if isclass(o[1]) if not o[0] == "Item"]
 
-methods = {
-    "Chain Hashing": "ChainHashMap",
-    "Cuckoo Hashing": "CuckooHashMap",
-    "Open Addressing Hashing": "OpenAddressingHashMap",
-    "all": "all",
+algos.append("all")
+
+data_types = {
+    "int": "data/measurement_results_100k_int.json",
+    "strings": "data/measurement_results_100k_str.json",
+    "tuples": "data/measurement_results_100k_tuple.json",
+    "real_life_data": "data/measurement_results_100k_str_real_data.json",
 }
 
 operation_names = ["delete", "get", "insert"]
+density_values = ["0.1", "0.25", "0.5", "0.75", "0.9", "0.99", "all"]
 
 
-def main(opts):
+def main():
     card = dbc.Card(
         dbc.CardBody(
             [
@@ -48,21 +54,45 @@ def main(opts):
             card,
             html.Div(
                 [
+                    html.H6("Hashing Method"),
                     dcc.Dropdown(
                         id="method-name",
-                        options=[{"label": i, "value": i} for i in methods.keys()],
-                        value="Chain Hashing",
-                    )
+                        options=[{"label": i, "value": i} for i in algos],
+                        value="CuckooHashMap",
+                    ),
                 ],
                 style={"width": "48%", "display": "inline-block"},
             ),
             html.Div(
                 [
+                    html.H6("Operation name"),
                     dcc.Dropdown(
                         id="operation-name",
                         options=[{"label": i, "value": i} for i in operation_names],
                         value="get",
-                    )
+                    ),
+                ],
+                style={"width": "48%", "display": "inline-block"},
+            ),
+            html.Div(
+                [
+                    html.H6("Table density"),
+                    dcc.Dropdown(
+                        id="density",
+                        options=[{"label": i, "value": i} for i in density_values],
+                        value="0.1",
+                    ),
+                ],
+                style={"width": "48%", "display": "inline-block"},
+            ),
+            html.Div(
+                [
+                    html.H6("Data type"),
+                    dcc.Dropdown(
+                        id="data-type",
+                        options=[{"label": i, "value": i} for i in data_types.keys()],
+                        value="int",
+                    ),
                 ],
                 style={"width": "48%", "display": "inline-block"},
             ),
@@ -74,23 +104,17 @@ def main(opts):
         Output("indicator-graphic", "figure"),
         Input("method-name", "value"),
         Input("operation-name", "value"),
+        Input("density", "value"),
+        Input("data-type", "value"),
     )
-    def update_graph(method_name, operation_name):
-        method_name = methods[method_name]
-        visualizer = Visualizer(opts.data_path)
-        fig = visualizer(method_name, operation_name)
+    def update_graph(method_name, operation_name, density, data_type):
+        method_name = method_name
+        path_to_data = data_types[data_type]
+        visualizer = Visualizer(path_to_data)
+        fig = visualizer(method_name, operation_name, density)
         return fig
 
 
 if __name__ == "__main__":
-
-    parser = argparse.ArgumentParser(description="Hashing Algorithms visualization.")
-    parser.add_argument(
-        "--data_path",
-        default="measurement_results_10k.json",
-        help="path to data with hashing algorithms results",
-    )
-
-    args = parser.parse_args()
-    main(args)
+    main()
     app.run_server(debug=True)

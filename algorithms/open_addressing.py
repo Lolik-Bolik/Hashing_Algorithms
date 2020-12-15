@@ -14,7 +14,7 @@ class OpenNode(Node):
         return ""
 
 
-class OpenAddressingHashMap(BaseHashMap):
+class OpenAddressingHashMapLinear(BaseHashMap):
     def __init__(
         self, size: int = 20, num_maps: int = 1, num_hash_func: int = 1, **kwargs
     ):
@@ -27,7 +27,7 @@ class OpenAddressingHashMap(BaseHashMap):
         self.map = self.maps[0]
         self.inserted_elements_amount = 0
 
-    def linear_probing(self, search_index, offset_index, stride: int = 1):
+    def probing(self, search_index, offset_index, stride: int = 1):
         """
         (hash(x) + ik) mod hash_map_size
         k - offset
@@ -35,10 +35,6 @@ class OpenAddressingHashMap(BaseHashMap):
         hash(x) - search_index
         """
         return (search_index + offset_index * stride) % self.size
-
-    def quadratic_probing(self, search_index, offset_index):
-
-        return (search_index + offset_index * offset_index) % self.size
 
     def insert(self, item: Item):
         if self.inserted_elements_amount == self.size:
@@ -51,7 +47,7 @@ class OpenAddressingHashMap(BaseHashMap):
         else:
             self.collision_count += 1
             for offset_index in range(1, self.size):
-                new_search_index = self.linear_probing(search_index, offset_index)
+                new_search_index = self.probing(search_index, offset_index)
                 if (
                     self.map[new_search_index] is None
                     or self.map[new_search_index].deleted
@@ -72,7 +68,7 @@ class OpenAddressingHashMap(BaseHashMap):
             return True, self.map[search_index].data
         else:
             for offset_index in range(1, self.size):
-                new_search_index = self.linear_probing(search_index, offset_index)
+                new_search_index = self.probing(search_index, offset_index)
                 if self.map[new_search_index] is None:
                     return False, None
                 elif (
@@ -92,7 +88,7 @@ class OpenAddressingHashMap(BaseHashMap):
             return True
         else:
             for offset_index in range(1, self.size):
-                new_search_index = self.linear_probing(search_index, offset_index)
+                new_search_index = self.probing(search_index, offset_index)
                 if self.map[new_search_index] is None:
                     return False
                 elif self.map[new_search_index].data == item:
@@ -106,9 +102,19 @@ class OpenAddressingHashMap(BaseHashMap):
         self.inserted_elements_amount = 0
 
     def rehash(self, k: int = 2):
-        temp = OpenAddressingHashMap(size=self.size * k)
+        temp = type(self)(size=self.size * k)
         for i in range(self.size):
             x = self.map[i]
             if x is not None:
                 temp.insert(x.data)
         self.__dict__.update(temp.__dict__)
+
+
+class OpenAddressingHashMapQuadratic(OpenAddressingHashMapLinear):
+    def probing(self, search_index, offset_index):
+        if offset_index < self.size // 2:
+            return (
+                search_index + offset_index + offset_index * offset_index
+            ) % self.size
+        else:
+            return super().probing(search_index, offset_index)

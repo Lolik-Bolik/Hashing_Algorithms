@@ -45,8 +45,7 @@ class CuckooHashMap(BaseHashMap):
                 search_position = first_index
                 bucket = self.map_1
         self.rehash()
-        self.insert(item)
-        return True
+        return self.insert(item)
 
     def rehash(self):
         # self.hash_functions = self._generate_hash_func(self.num_hash_func)
@@ -84,12 +83,13 @@ class CuckooHashMap(BaseHashMap):
         if first_item is not None and first_item.key == item.key:
             self.map_1[first_index] = None
             self.inserted_elements_amount[0] -= 1
+            return True
         elif second_item is not None and second_item.key == item.key:
             self.map_2[second_index] = None
             self.inserted_elements_amount[1] -= 1
+            return True
         else:
             return False
-        return True
 
     def refresh(self):
         super().refresh()

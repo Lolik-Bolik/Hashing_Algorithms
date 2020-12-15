@@ -1,6 +1,6 @@
 from collections import Hashable
 from typing import Any, Union
-from utils import UniversalHashFunction, FastUniversalHashFunction
+from .universal_hash_function import UniversalHashFunction, FastUniversalHashFunction
 from Crypto.Util import number
 from copy import deepcopy
 
@@ -13,7 +13,7 @@ class Item:
         self.value = value
 
     def __repr__(self):
-        print(f"{self.key}: {self.value}", end="")
+        print(f"{self.key}: {self.value}", end="\n")
         return ""
 
     def __eq__(self, other):
@@ -121,3 +121,10 @@ class BaseHashMap:
 
     def __len__(self):
         return self.inserted_elements_amount
+
+    def __getitem__(self, key):
+        status, item = self.get(key)
+        if status:
+            return item
+        else:
+            return None

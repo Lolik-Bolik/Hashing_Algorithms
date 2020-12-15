@@ -11,7 +11,7 @@ def get_data(path=""):
                 [
                     name,
                     size.split(",")[0],
-                    size.split(",")[1],
+                    float(size.split(",")[1]),
                     results["insert"],
                     results["delete"],
                     results["get"],

@@ -1,9 +1,9 @@
-from algorithms import OpenAddressingHashMap
+from algorithms import OpenAddressingHashMapLinear
 from algorithms import Item
 
 
 class TestChainHashing:
-    hash_map = OpenAddressingHashMap(size=1)
+    hash_map = OpenAddressingHashMapLinear(size=1)
 
     def test_insert(self):
         item = Item(1, 1)
@@ -37,7 +37,7 @@ class TestChainHashing:
         self.hash_map.refresh()
 
     def test_delete(self):
-        self.hash_map = OpenAddressingHashMap(size=4)
+        self.hash_map = OpenAddressingHashMapLinear(size=4)
         item_1 = Item(1, 1)
         self.hash_map.insert(item_1)
         self.hash_map.delete(item_1)
