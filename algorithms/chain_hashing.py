@@ -15,11 +15,9 @@ class ChainHashMap(BaseHashMap):
         size: int = 1,
         num_hash_func: int = 1,
         ignore_max_elements: bool = False,
-        number_of_bits: int = 8,
+        **kwargs
     ):
-        super().__init__(
-            size, num_hash_func=num_hash_func, number_of_bits=number_of_bits
-        )
+        super().__init__(size, num_hash_func=num_hash_func, **kwargs)
         self.map = self.maps[0]
         self.hash_func = self.hash_functions[0]
         self.inserted_elements_amount = 0

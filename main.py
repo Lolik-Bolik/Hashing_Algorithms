@@ -12,10 +12,18 @@ def main():
     ]
     pbar = tqdm(hashing_classes)
     for name, hashing_table_cls in pbar:
-        if name != "CuckooHashMap":
-            continue
+        # if name != "CuckooHashMap":
+        #     continue
         pbar.set_description(f"Name: {name}")
-        evaluator = Evaluator(1000, 105000, 5000, hashing_table_cls, dtype="tuple")
+        evaluator = Evaluator(
+            1000,
+            106000,
+            5000,
+            hashing_table_cls,
+            dtype="tuple",
+            number_of_bits=64,
+            use_fast_hashing=False,
+        )
         measurement_results[name] = evaluator()
     with open("measurement_results_100k_tuple.json", "w") as fp:
         json.dump(measurement_results, fp, indent=4, sort_keys=True)

@@ -16,14 +16,13 @@ class OpenNode(Node):
 
 class OpenAddressingHashMap(BaseHashMap):
     def __init__(
-        self,
-        size: int = 20,
-        num_maps: int = 1,
-        num_hash_func: int = 1,
-        number_of_bits: int = 8,
+        self, size: int = 20, num_maps: int = 1, num_hash_func: int = 1, **kwargs
     ):
         super().__init__(
-            size, num_maps, num_hash_func=num_hash_func, number_of_bits=number_of_bits
+            size,
+            num_maps,
+            num_hash_func=num_hash_func,
+            **kwargs,
         )
         self.map = self.maps[0]
         self.inserted_elements_amount = 0
@@ -36,6 +35,10 @@ class OpenAddressingHashMap(BaseHashMap):
         hash(x) - search_index
         """
         return (search_index + offset_index * stride) % self.size
+
+    def quadratic_probing(self, search_index, offset_index):
+
+        return (search_index + offset_index * offset_index) % self.size
 
     def insert(self, item: Item):
         if self.inserted_elements_amount == self.size:
