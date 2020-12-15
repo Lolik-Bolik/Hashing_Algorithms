@@ -63,8 +63,10 @@ class ChainHashMap(BaseHashMap):
             if record_node.data == item:
                 if previous_node is not None:
                     previous_node.next = record_node.next
+                else:
+                    self.map[hash_value] = record_node.next
+                    del record_node
                 self.inserted_elements_amount -= 1
-                del record_node
                 return True
             previous_node = record_node
             record_node = record_node.next
