@@ -39,7 +39,6 @@ class UniversalHashFunction:
                 isinstance(v, int) for v in k
             )  # Could be slow, but we should check that there are ints in vector
             # Note: This is (len(k) / p) + 1 / size universal hash function, so we need to choose quite bit prime number!
-            # TODO: проверить, т.к кукушка выдает одинаковые хеши для векторов (0, 0, 0) и (1, 0, 0)
             return (
                 sum([(self.a ** i) * v for i, v in enumerate(k)])
                 % self.p
@@ -52,6 +51,29 @@ class UniversalHashFunction:
             return h % self.hash_map_size
         else:
             raise TypeError("Key should be from supported types: int, tuple, str")
+
+
+class KIndependentUniversalHashFunction:
+    def __init__(self, p: int, m: int, k: int = 3):
+        self.hash_map_size = m
+        self.p = p
+        # Naming from Corman
+        self.a = [random.randint(0, self.p - 1) for _ in range(k)]
+        self.b = random.randint(1, self.p - 1)
+
+    def __call__(self, k):
+        # https://stackoverflow.com/questions/16284317/obtaining-a-k-wise-independent-hash-function
+        if isinstance(k, int):
+            return (
+                (sum([(k ** i) * coeff for i, coeff in enumerate(self.a, 1)]) + self.b)
+                % self.p
+            ) % self.hash_map_size
+        elif isinstance(k, tuple):
+            k = int(sum(tuple))
+            return self(k)
+        elif isinstance(k, str):
+            k = sum([ord(char) for char in k])
+            return self(k)
 
 
 class FastUniversalHashFunction:

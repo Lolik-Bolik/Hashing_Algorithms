@@ -111,7 +111,7 @@ class OpenAddressingHashMapLinear(BaseHashMap):
 
 
 class OpenAddressingHashMapQuadratic(OpenAddressingHashMapLinear):
-    def probing(self, search_index, offset_index):
+    def probing(self, search_index, offset_index, *args):
         if offset_index < self.size // 2:
             return (
                 search_index + offset_index + offset_index * offset_index

@@ -1,13 +1,18 @@
+# flake8: noqa
+
 import nltk
-from nltk.tokenize import sent_tokenize, word_tokenize
+
+nltk.download("brown")
+nltk.download("names")
 import numpy as np
 import multiprocessing as mp
 import string
 import spacy
+import os
+
+os.system("python -m spacy download en_core_web_sm")
 from sklearn.base import TransformerMixin, BaseEstimator
 from normalise import normalise
-import os
-from copy import copy
 import pandas as pd
 
 
@@ -24,9 +29,7 @@ class TextPreprocessor(BaseEstimator, TransformerMixin):
         user_abbrevs - dict of user abbreviations mappings (from normalise package)
         n_jobs - parallel jobs to run
         """
-        nltk.download("brown")
-        nltk.download("names")
-        os.system("python -m spacy download en_core_web_sm")
+
         self.variety = variety
         self.user_abbrevs = user_abbrevs
         self.n_jobs = n_jobs

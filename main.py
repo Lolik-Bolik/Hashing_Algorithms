@@ -28,7 +28,10 @@ def parse_args():
 def run(pbar, dtype, additional_save_path="", **kwargs):
     measurement_results = {}
     for name, hashing_table_cls in pbar:
+        kwargs["use_k_independent"] = False
         pbar.set_description(f"Name: {name}")
+        if name == "CuckooHashMap":
+            kwargs["use_k_independent"] = True
         evaluator = Evaluator(hashing_table_cls, dtype=dtype, **kwargs)
         measurement_results[name] = evaluator()
     with open(
@@ -39,9 +42,9 @@ def run(pbar, dtype, additional_save_path="", **kwargs):
 
 def main():
     args = parse_args()
-    hashing_classes = [
-        o for o in getmembers(algorithms) if isclass(o[1]) if not o[0] == "Item"
-    ]
+    hashing_classes = reversed(
+        [o for o in getmembers(algorithms) if isclass(o[1]) if not o[0] == "Item"]
+    )
     if args.collect_data:
         pbar = tqdm(hashing_classes)
         for dtype in ("int", "tuple", "str"):
@@ -51,8 +54,7 @@ def main():
                 start_value=1000,
                 max_value=106000,
                 step=5000,
-                number_of_bits=64,
-                use_fast_hashing=False,
+                number_of_bits=63,
             )
 
     if args.real_data:
@@ -60,7 +62,7 @@ def main():
         if not os.path.exists(save_path):
             from utils import preprocess_text
 
-            preprocess_text()
+            preprocess_text(save_path)
         data = pd.read_csv(save_path)
         all_text = []
         for _, text in data["text"].items():
@@ -76,8 +78,7 @@ def main():
             start_value=1000,
             max_value=25000,
             step=1000,
-            number_of_bits=64,
-            use_fast_hashing=False,
+            number_of_bits=63,
         )
 
 
