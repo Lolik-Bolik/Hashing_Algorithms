@@ -27,7 +27,7 @@ class OpenAddressingHashMapLinear(BaseHashMap):
         self.map = self.maps[0]
         self.inserted_elements_amount = 0
 
-    def probing(self, search_index, offset_index, stride: int = 1):
+    def probing(self, search_index, offset_index, key, stride: int = 1):
         """
         (hash(x) + ik) mod hash_map_size
         k - offset
@@ -47,7 +47,7 @@ class OpenAddressingHashMapLinear(BaseHashMap):
         else:
             self.collision_count += 1
             for offset_index in range(1, self.size):
-                new_search_index = self.probing(search_index, offset_index)
+                new_search_index = self.probing(search_index, offset_index, item.key)
                 if (
                     self.map[new_search_index] is None
                     or self.map[new_search_index].deleted
@@ -68,7 +68,7 @@ class OpenAddressingHashMapLinear(BaseHashMap):
             return True, self.map[search_index].data
         else:
             for offset_index in range(1, self.size):
-                new_search_index = self.probing(search_index, offset_index)
+                new_search_index = self.probing(search_index, offset_index, key)
                 if self.map[new_search_index] is None:
                     return False, None
                 elif (
@@ -88,7 +88,7 @@ class OpenAddressingHashMapLinear(BaseHashMap):
             return True
         else:
             for offset_index in range(1, self.size):
-                new_search_index = self.probing(search_index, offset_index)
+                new_search_index = self.probing(search_index, offset_index, item.key)
                 if self.map[new_search_index] is None:
                     return False
                 elif self.map[new_search_index].data == item:
@@ -112,9 +112,17 @@ class OpenAddressingHashMapLinear(BaseHashMap):
 
 class OpenAddressingHashMapQuadratic(OpenAddressingHashMapLinear):
     def probing(self, search_index, offset_index, *args):
-        if offset_index < self.size // 2:
-            return (
-                search_index + offset_index + offset_index * offset_index
-            ) % self.size
-        else:
-            return super().probing(search_index, offset_index)
+        return int(
+            (search_index + 1 / 2 * offset_index + 1 / 2 * offset_index ** 2)
+            % self.size
+        )
+
+
+class OpenAddressingHashMapDouble(OpenAddressingHashMapLinear):
+    def __init__(self, *args, **kwargs):
+        super().__init__(num_hash_func=2, *args, **kwargs)
+
+    def probing(self, search_index, offset_index, key, *args):
+        double_hash = self.hash_functions[1](key)
+        double_hash = 2 * (double_hash // 2) - 1 if double_hash != 0 else 1
+        return (search_index + offset_index * double_hash) % self.size

@@ -35,7 +35,7 @@ def run(pbar, dtype, additional_save_path="", **kwargs):
         evaluator = Evaluator(hashing_table_cls, dtype=dtype, **kwargs)
         measurement_results[name] = evaluator()
     with open(
-        f"data/measurement_results_100k_{dtype}{additional_save_path}.json", "w"
+        f"data/measurement_results_100k_2_power_{dtype}{additional_save_path}.json", "w"
     ) as fp:
         json.dump(measurement_results, fp, indent=4, sort_keys=False)
 
@@ -60,7 +60,7 @@ def main():
     if args.real_data:
         save_path = "data/bbc-text-preprocessed.csv"
         if not os.path.exists(save_path):
-            from utils import preprocess_text
+            from utils.process_book import preprocess_text
 
             preprocess_text(save_path)
         data = pd.read_csv(save_path)

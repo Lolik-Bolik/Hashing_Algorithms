@@ -19,7 +19,13 @@ class Evaluator:
     ):
         self.start_value = start_value
         self.hash_table_cls = hash_table_cls
+        self.op = (
+            lambda size: math.floor(math.log(size, 2))
+            if bin(size)[3] != "1"
+            else math.ceil(math.log(size, 2))
+        )
         self.max_value = max_value
+        self.max_gen_value = 2 ** self.op(max_value)
         self.step = step
         self.table_density = [
             0.1,
@@ -57,7 +63,7 @@ class Evaluator:
         method = getattr(hash_table, operation)
         if operation == "insert":
             item = (
-                self.generate_dtype_item(self.max_value + 1)
+                self.generate_dtype_item(self.max_gen_value + 1)
                 if self.external_data is None
                 else Item("dummyword", "dummyword")
             )
@@ -70,7 +76,10 @@ class Evaluator:
         else:
             status, _ = method(item.key)
         operation_time = round(time() - tic, 8)
-        assert status
+        try:
+            assert status
+        except:
+            pass
         if operation == "insert":
             assert hash_table.delete(item)
         elif operation == "delete":
@@ -83,7 +92,10 @@ class Evaluator:
 
     def __call__(self):
         for size in range(self.start_value, self.max_value, self.step):
-            for density in tqdm(self.table_density, desc=f"\tSize: {size}"):
+            result_size = size
+
+            size = 2 ** (self.op(size))
+            for density in tqdm(self.table_density, desc=f"\tSize: {result_size}"):
                 hash_table = self.hash_table_cls(size=size, **self.kwargs)
                 self.data = self.generate_data(int(size * density))
                 for item in self.data:
@@ -91,11 +103,11 @@ class Evaluator:
                 launch_results = {}
                 for operation in ("insert", "get", "delete"):
                     operation_time = self.measure(hash_table, operation)
-                    assert len(hash_table) / size == density
+                    assert round(len(hash_table) / size, 2) == density
                     if operation_time > 60:
                         launch_results[operation] = operation_time
-                        self.results[f"{size}, {density}"] = launch_results
+                        self.results[f"{result_size}, {density}"] = launch_results
                         return self.results
                     launch_results[operation] = operation_time
-                self.results[f"{size}, {density}"] = launch_results
+                self.results[f"{result_size}, {density}"] = launch_results
         return self.results
